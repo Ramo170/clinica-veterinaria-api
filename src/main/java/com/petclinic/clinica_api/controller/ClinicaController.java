@@ -30,4 +30,22 @@ public class ClinicaController {
         List<ClinicaResponseDTO> clinicas = service.listarTodas();
         return ResponseEntity.ok(clinicas);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ClinicaResponseDTO> buscarPorId(@PathVariable Long id){
+        ClinicaResponseDTO clinica = service.buscarPorId(id);
+        return ResponseEntity.ok(clinica);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ClinicaResponseDTO> atualizar(@PathVariable Long id, @RequestBody ClinicaRequestDTO dto){
+        ClinicaResponseDTO response = service.atualizar(id, dto);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable Long id){
+        service.deletar(id);
+        return ResponseEntity.noContent().build();
+    }
 }

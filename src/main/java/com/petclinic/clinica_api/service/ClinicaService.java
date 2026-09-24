@@ -40,6 +40,38 @@ public class ClinicaService {
                 .toList();
     }
 
+    public ClinicaResponseDTO buscarPorId(Long id) {
+        Clinica clinica = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Clínica não encotrada com o ID: " + id));
+
+        return  mapperParaDTO(clinica);
+    }
+
+    public ClinicaResponseDTO atualizar(Long id, ClinicaRequestDTO dto){
+        Clinica clinica = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Clínica não encotrada com o ID: " + id));
+
+        if (!clinica.getCnpj().equals(dto.cnpj()) && repository.existsByCnpj(dto.cnpj())) {
+            throw new IllegalArgumentException("O novo CNPJ informado já está em uso por outra clínica.");
+        }
+
+        clinica.setNome(dto.nome());
+        clinica.setCnpj(dto.cnpj());
+        clinica.setTelefone(dto.telefone());
+        clinica.setEndereco(dto.endereco());
+
+        Clinica clinicaSalva = repository.save(clinica);
+
+        return mapperParaDTO(clinicaSalva);
+    }
+
+    public void deletar(Long id) {
+        Clinica clinica = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Clínica não encotrada com o ID: " + id));
+
+        repository.delete(clinica);
+    }
+
     private ClinicaResponseDTO mapperParaDTO(Clinica clinica) {
         return new ClinicaResponseDTO(
                 clinica.getId(),
